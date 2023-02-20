@@ -84,6 +84,68 @@ describe("API Testing", () => {
             });
           });
       });
+
+      test("GET /api/reviews/:review_id should return a status code of 200", () => {
+        return request(app).get("/api/reviews/1").expect(200);
+      });
+      test("GET /api/reviews/:review_id should return an object with the review_id of 1", () => {
+        return request(app)
+          .get("/api/reviews/1")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.review[0]).toMatchObject({
+              category: expect.any(String),
+              created_at: expect.any(String),
+              designer: expect.any(String),
+              owner: expect.any(String),
+              review_body: expect.any(String),
+              review_id: 1,
+              review_img_url: expect.any(String),
+              title: expect.any(String),
+              votes: expect.any(Number),
+            });
+          });
+      });
+      test("GET /api/reviews/:review_id should return an object with the review_id of 5", () => {
+        return request(app)
+          .get("/api/reviews/5")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.review[0]).toMatchObject({
+              category: expect.any(String),
+              created_at: expect.any(String),
+              designer: expect.any(String),
+              owner: expect.any(String),
+              review_body: expect.any(String),
+              review_id: 5,
+              review_img_url: expect.any(String),
+              title: expect.any(String),
+              votes: expect.any(Number),
+            });
+          });
+      });
+      test("GET /api/reviews/:review_id should return a status code of 400 if passed an invalid type", () => {
+        return request(app).get("/api/reviews/test").expect(400);
+      });
+      test("GET /api/reviews/:review_id should return an error message of Invalid type for request when passed an invalid type", () => {
+        return request(app)
+          .get("/api/reviews/test")
+          .expect(400)
+          .then((res) => {
+            expect(res.text).toBe("Invalid type for request");
+          });
+      });
+      test("GET /api/reviews/:review_id should return a status code of 404 if the review does not exist", () => {
+        return request(app).get("/api/reviews/50").expect(404);
+      });
+      test("GET /api/reviews/:review_id should return the appropriate error message when passed a non-existant review id", () => {
+        return request(app)
+          .get("/api/reviews/999")
+          .expect(404)
+          .then((res) => {
+            expect(res.text).toBe("No review found for review_id 999");
+          });
+      });
     });
   });
 });
