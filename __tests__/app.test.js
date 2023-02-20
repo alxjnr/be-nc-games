@@ -35,7 +35,7 @@ describe("API Testing", () => {
     });
   });
   describe("/api/reviews", () => {
-    describe.only("GET requests", () => {
+    describe("GET requests", () => {
       test("Should return a status code of 200", () => {
         return request(app).get("/api/reviews").expect(200);
       });
@@ -44,6 +44,7 @@ describe("API Testing", () => {
           .get("/api/reviews")
           .expect(200)
           .then((res) => {
+            expect(res.body.reviews.length).not.toBe(0);
             res.body.reviews.forEach((obj) => {
               expect(obj).toMatchObject({
                 review_id: expect.any(Number),
@@ -67,7 +68,7 @@ describe("API Testing", () => {
             res.body.reviews.forEach((obj) => {
               expect(obj).toEqual(
                 expect.objectContaining({
-                  comment_count: expect.any(Number),
+                  comment_count: expect.any(String),
                 })
               );
             });
@@ -78,16 +79,9 @@ describe("API Testing", () => {
           .get("/api/reviews")
           .expect(200)
           .then((res) => {
-            expect(res.body.reviews[0]).toEqual(
-              expect.objectContaining({
-                created_at: "2021-01-25T11:16:54.963Z",
-              })
-            );
-            expect(res.body.reviews[res.body.reviews.length - 1]).toEqual(
-              expect.objectContaining({
-                created_at: "1970-01-10T02:08:38.400Z",
-              })
-            );
+            expect(res.body.reviews).toBeSortedBy("created_at", {
+              descending: true,
+            });
           });
       });
     });
