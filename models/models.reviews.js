@@ -34,7 +34,6 @@ exports.fetchCommentsByReviewId = (review_id) => {
       `SELECT * FROM comments WHERE review_id = ${review_id} ORDER BY comments.created_at DESC`
     )
     .then((res) => {
-      console.log(res.rows);
       if (!res.rows.length) {
         return Promise.reject({
           status: 404,

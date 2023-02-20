@@ -174,7 +174,7 @@ describe("API Testing", () => {
             });
           });
       });
-      test.only("GET /api/reviews/2/comments should return with an array of objects ordered with the most recent comments first", () => {
+      test("GET /api/reviews/2/comments should return with an array of objects ordered with the most recent comments first", () => {
         return request(app)
           .get("/api/reviews/2/comments")
           .expect(200)
