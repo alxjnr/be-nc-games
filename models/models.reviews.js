@@ -27,3 +27,20 @@ exports.fetchReviews = () => {
       return res.rows;
     });
 };
+
+exports.fetchCommentsByReviewId = (review_id) => {
+  return db
+    .query(
+      `SELECT * FROM comments WHERE review_id = ${review_id} ORDER BY comments.created_at DESC`
+    )
+    .then((res) => {
+      console.log(res.rows);
+      if (!res.rows.length) {
+        return Promise.reject({
+          status: 404,
+          msg: `No comments found for review_id ${review_id}`,
+        });
+      }
+      return res.rows;
+    });
+};
