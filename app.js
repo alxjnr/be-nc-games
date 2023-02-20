@@ -1,11 +1,21 @@
 const express = require("express");
 const app = express();
 const { getCategories } = require("./controllers/controllers.categories");
-const { getReviewById } = require("./controllers/controllers.reviews");
+const {
+  getReviewById,
+  getReviews,
+} = require("./controllers/controllers.reviews");
 
 app.get("/api/categories", getCategories);
 
 app.get("/api/reviews/:review_id", getReviewById);
+
+app.get("/api/reviews", getReviews);
+
+// app.use((err, req, res, next) => {
+//     console.log(err);
+//     res.status(500).send({ msg: "Internal Server Error" });
+// });
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
