@@ -37,6 +37,6 @@ exports.insertReviewComment = (username, body, review_id) => {
   );
 
   return db.query(insertObj).then((res) => {
-    return res.rows;
+    return res.rows[0];
   });
 };

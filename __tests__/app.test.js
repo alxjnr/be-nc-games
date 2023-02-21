@@ -168,7 +168,7 @@ describe("API Testing", () => {
           .send(requestToSend)
           .expect(201)
           .then((res) => {
-            expect(res.body.review[0]).toMatchObject({
+            expect(res.body.comment).toMatchObject({
               author: "mallionaire",
               body: "demonstration comment",
               comment_id: expect.any(Number),
@@ -211,6 +211,40 @@ describe("API Testing", () => {
           .expect(400)
           .then((res) => {
             expect(res.text).toBe("Invalid type for request");
+          });
+      });
+      test("Should return a 400 if the review_id is of an invalid type", () => {
+        const requestToSend = {
+          username: "mallionaire",
+          body: "demonstration comment",
+        };
+        return request(app)
+          .post("/api/reviews/test/comments")
+          .send(requestToSend)
+          .expect(400)
+          .then((res) => {
+            expect(res.text).toBe("Invalid type for request");
+          });
+      });
+      test("Should return a 201 when posting a comment with extra properties (which should be ignored)", () => {
+        const requestToSend = {
+          username: "mallionaire",
+          body: "demonstration comment",
+          votes: 5,
+        };
+        return request(app)
+          .post("/api/reviews/5/comments")
+          .send(requestToSend)
+          .expect(201)
+          .then((res) => {
+            expect(res.body.comment).toMatchObject({
+              author: "mallionaire",
+              body: "demonstration comment",
+              comment_id: expect.any(Number),
+              created_at: expect.any(String),
+              review_id: 5,
+              votes: 0,
+            });
           });
       });
     });

@@ -27,8 +27,9 @@ exports.postReviewComment = (req, res, next) => {
   const { username, body } = req.body;
   const { review_id } = req.params;
   insertReviewComment(username, body, review_id)
-    .then((review) => {
-      res.status(201).send({ review });
+    .then((comment) => {
+      // console.log({ review });
+      res.status(201).send({ comment });
     })
     .catch((err) => {
       next(err);
