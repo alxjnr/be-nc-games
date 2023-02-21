@@ -169,7 +169,7 @@ describe("API Testing", () => {
                 created_at: expect.any(String),
                 author: expect.any(String),
                 body: expect.any(String),
-                review_id: expect.any(Number),
+                review_id: 2,
               });
             });
           });
@@ -184,17 +184,6 @@ describe("API Testing", () => {
             });
           });
       });
-      test("GET /api/reviews/999/comments should return a status code of 404", () => {
-        return request(app).get("/api/reviews/999/comments").expect(404);
-      });
-      test("GET /api/reviews/999/comments should return the appropriate error message", () => {
-        return request(app)
-          .get("/api/reviews/999/comments")
-          .expect(404)
-          .then((res) => {
-            expect(res.text).toBe("No comments found for review_id 999");
-          });
-      });
       test("GET /api/reviews/test/comments should return a status code of 400", () => {
         return request(app).get("/api/reviews/test/comments").expect(400);
       });
@@ -204,6 +193,25 @@ describe("API Testing", () => {
           .expect(400)
           .then((res) => {
             expect(res.text).toBe("Invalid type for request");
+          });
+      });
+      test("GET /api/reviews/8/comments should return a status code of 200", () => {
+        return request(app)
+          .get("/api/reviews/8/comments")
+          .expect(200)
+          .then((res) => {
+            expect(res.body).toEqual({ comments: [] });
+          });
+      });
+      test("GET /api/reviews/999/comments should return a status code of 404", () => {
+        return request(app).get("/api/reviews/999/comments").expect(404);
+      });
+      test("GET /api/reviews/999/comments should return the appropriate error message", () => {
+        return request(app)
+          .get("/api/reviews/999/comments")
+          .expect(404)
+          .then((res) => {
+            expect(res.text).toBe("No review found for review_id 999");
           });
       });
     });

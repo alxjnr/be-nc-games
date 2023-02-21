@@ -25,9 +25,12 @@ exports.getReviews = (req, res, next) => {
 
 exports.getCommentsByReviewId = (req, res, next) => {
   const { review_id } = req.params;
-  fetchCommentsByReviewId(review_id)
-    .then((comments) => {
-      res.status(200).send({ comments });
+  const IdCheck = fetchReviewById(review_id);
+  const comments = fetchCommentsByReviewId(review_id);
+
+  Promise.all([IdCheck, comments])
+    .then((values) => {
+      res.status(200).send({ comments: values[1] });
     })
     .catch((err) => {
       next(err);
