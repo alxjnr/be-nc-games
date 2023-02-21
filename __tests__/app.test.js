@@ -215,5 +215,104 @@ describe("API Testing", () => {
           });
       });
     });
+    describe("PATCH requests", () => {
+      test("Should return a status code of 201 if the update is sucessfull", () => {
+        const reqBody = {
+          inc_votes: 10,
+        };
+        return request(app).patch("/api/reviews/1").send(reqBody).expect(201);
+      });
+      test("Should return the review with the updated vote increment", () => {
+        const reqBody = {
+          inc_votes: 1,
+        };
+        return request(app)
+          .patch("/api/reviews/4")
+          .send(reqBody)
+          .expect(201)
+          .then((res) => {
+            expect(res.body.review).toHaveLength(1);
+            expect(res.body.review[0]).toMatchObject({
+              title: "Dolor reprehenderit",
+              designer: "Gamey McGameface",
+              owner: "mallionaire",
+              review_img_url: expect.any(String),
+              review_body: expect.any(String),
+              category: "social deduction",
+              created_at: expect.any(String),
+              votes: 8,
+            });
+          });
+      });
+      test("Should return the review with the updated vote increment when the increment is 100", () => {
+        const reqBody = {
+          inc_votes: 100,
+        };
+        return request(app)
+          .patch("/api/reviews/4")
+          .send(reqBody)
+          .expect(201)
+          .then((res) => {
+            expect(res.body.review).toHaveLength(1);
+            expect(res.body.review[0]).toMatchObject({
+              title: "Dolor reprehenderit",
+              designer: "Gamey McGameface",
+              owner: "mallionaire",
+              review_img_url: expect.any(String),
+              review_body: expect.any(String),
+              category: "social deduction",
+              created_at: expect.any(String),
+              votes: 107,
+            });
+          });
+      });
+      test("Should return a 404 if the requested review is not found", () => {
+        const reqBody = {
+          inc_votes: 100,
+        };
+        return request(app).patch("/api/reviews/999").send(reqBody).expect(404);
+      });
+      test("Should return a 200 if the request body is in the incorrect format", () => {
+        const reqBody = {
+          upvotes: 100,
+        };
+        return request(app).patch("/api/reviews/2").send(reqBody).expect(400);
+      });
+      test("Should return a 400 if the request contains no body", () => {
+        const reqBody = {};
+        return request(app).patch("/api/reviews/2").send(reqBody).expect(400);
+      });
+      test("Should decrement the vote if inc_votes has a negative value", () => {
+        const reqBody = {
+          inc_votes: -20,
+        };
+        return request(app)
+          .patch("/api/reviews/4")
+          .send(reqBody)
+          .expect(201)
+          .then((res) => {
+            expect(res.body.review).toHaveLength(1);
+            expect(res.body.review[0]).toMatchObject({
+              title: "Dolor reprehenderit",
+              designer: "Gamey McGameface",
+              owner: "mallionaire",
+              review_img_url: expect.any(String),
+              review_body: expect.any(String),
+              category: "social deduction",
+              created_at: expect.any(String),
+              votes: -13,
+            });
+          });
+      });
+      test("Should return a 400 if the review_id is of an invalid type", () => {
+        const reqBody = {
+          inc_votes: 10,
+        };
+        return request(app)
+          .patch("/api/reviews/test")
+          .send(reqBody)
+          .expect(400);
+      });
+    });
   });
 });
