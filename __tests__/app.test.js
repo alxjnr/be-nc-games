@@ -221,13 +221,14 @@ describe("API Testing", () => {
       test("GET /api/users should respond with a status code of 200", () => {
         return request(app).get("/api/users").expect(200);
       });
-      test("GET /api/users should return an array of user objects", () => {
+      test.only("GET /api/users should return an array of user objects", () => {
         return request(app)
           .get("/api/users")
           .expect(200)
           .then((res) => {
-            expect(typeof res.body.rows).toBe("object");
-            res.body.rows.forEach((obj) => {
+            // console.log(res.body.users);
+            expect(typeof res.body.users).toBe("object");
+            res.body.users.forEach((obj) => {
               expect(obj).toMatchObject({
                 username: expect.any(String),
                 name: expect.any(String),
