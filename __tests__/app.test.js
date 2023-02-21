@@ -272,7 +272,7 @@ describe("API Testing", () => {
         };
         return request(app).patch("/api/reviews/999").send(reqBody).expect(404);
       });
-      test("Should return a 400 if the request body is in the incorrect format", () => {
+      test("Should return a 200 if the request body is in the incorrect format", () => {
         const reqBody = {
           upvotes: 100,
         };
@@ -303,6 +303,15 @@ describe("API Testing", () => {
               votes: -13,
             });
           });
+      });
+      test("Should return a 400 if the review_id is of an invalid type", () => {
+        const reqBody = {
+          inc_votes: 10,
+        };
+        return request(app)
+          .patch("/api/reviews/test")
+          .send(reqBody)
+          .expect(400);
       });
     });
   });

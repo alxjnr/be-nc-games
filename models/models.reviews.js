@@ -40,23 +40,25 @@ exports.fetchCommentsByReviewId = (review_id) => {
 };
 
 exports.updateReview = (review_id, inc_votes) => {
-  let countValue;
-  if (inc_votes < 0) {
-    countValue = format(
-      `UPDATE reviews SET votes = votes + ${inc_votes} WHERE review_id = ${review_id} RETURNING *;`
-    );
-  } else {
-    countValue = format(
-      `UPDATE reviews SET votes = votes + ${inc_votes} WHERE review_id = ${review_id} RETURNING *;`
-    );
-  }
-  return db.query(countValue).then((res) => {
-    if (!res.rows.length) {
+  let countValue = format(
+    `UPDATE reviews SET votes = votes + ${inc_votes} WHERE review_id = ${review_id} RETURNING *;`
+  );
+  // if (inc_votes < 0) {
+  //   countValue = format(
+  //     `UPDATE reviews SET votes = votes + ${inc_votes} WHERE review_id = ${review_id} RETURNING *;`
+  //   );
+  // } else {
+  //   countValue = format(
+  //     `UPDATE reviews SET votes = votes + ${inc_votes} WHERE review_id = ${review_id} RETURNING *;`
+  //   );
+  // }
+  return db.query(countValue).then((values) => {
+    if (!values.rows.length) {
       return Promise.reject({
         status: 404,
         msg: `No review found for review_id ${review_id}`,
       });
     }
-    return res;
+    return values;
   });
 };
