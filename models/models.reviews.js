@@ -15,18 +15,32 @@ exports.fetchReviewById = (review_id) => {
     });
 };
 
-exports.fetchReviews = () => {
-  return db
-    .query(
-      `SELECT reviews.*, COUNT(comments.review_id) AS comment_count FROM reviews 
-      LEFT JOIN comments 
-      ON reviews.review_id = comments.review_id 
-      GROUP BY reviews.review_id 
-      ORDER BY reviews.created_at DESC;`
-    )
-    .then((res) => {
-      return res.rows;
-    });
+exports.fetchReviews = (
+  category = "",
+  sort_by = "created_at",
+  order = "DESC"
+) => {
+  let categoryAdd = "";
+
+  if (category.length) {
+    categoryAdd = `WHERE category LIKE '%${category}%'`;
+  }
+
+  let queryStr = `SELECT reviews.*, COUNT(comments.review_id) AS comment_count FROM reviews 
+  LEFT JOIN comments 
+  ON reviews.review_id = comments.review_id ${categoryAdd}
+  GROUP BY reviews.review_id 
+  ORDER BY reviews.${sort_by} ${order};`;
+
+  return db.query(queryStr).then((res) => {
+    if (!res.rows.length) {
+      return Promise.reject({
+        status: 404,
+        msg: `No category found`,
+      });
+    }
+    return res.rows;
+  });
 };
 
 exports.insertReviewComment = (username, body, review_id) => {
