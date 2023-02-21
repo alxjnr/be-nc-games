@@ -40,3 +40,28 @@ exports.insertReviewComment = (username, body, review_id) => {
     return res.rows[0];
   });
 };
+
+exports.fetchCommentsByReviewId = (review_id) => {
+  return db
+    .query(
+      `SELECT * FROM comments WHERE review_id = ${review_id} ORDER BY comments.created_at DESC`
+    )
+    .then((res) => {
+      return res.rows;
+    });
+};
+
+exports.updateReview = (review_id, inc_votes) => {
+  let countValue = format(
+    `UPDATE reviews SET votes = votes + ${inc_votes} WHERE review_id = ${review_id} RETURNING *;`
+  );
+  return db.query(countValue).then((values) => {
+    if (!values.rows.length) {
+      return Promise.reject({
+        status: 404,
+        msg: `No review found for review_id ${review_id}`,
+      });
+    }
+    return values;
+  });
+};
