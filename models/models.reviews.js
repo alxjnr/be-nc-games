@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const format = require("pg-format");
 
 exports.fetchReviewById = (review_id) => {
   return db
@@ -36,4 +37,26 @@ exports.fetchCommentsByReviewId = (review_id) => {
     .then((res) => {
       return res.rows;
     });
+};
+
+exports.updateReview = (review_id, inc_votes) => {
+  let countValue;
+  if (inc_votes < 0) {
+    countValue = format(
+      `UPDATE reviews SET votes = votes + ${inc_votes} WHERE review_id = ${review_id} RETURNING *;`
+    );
+  } else {
+    countValue = format(
+      `UPDATE reviews SET votes = votes + ${inc_votes} WHERE review_id = ${review_id} RETURNING *;`
+    );
+  }
+  return db.query(countValue).then((res) => {
+    if (!res.rows.length) {
+      return Promise.reject({
+        status: 404,
+        msg: `No review found for review_id ${review_id}`,
+      });
+    }
+    return res;
+  });
 };
