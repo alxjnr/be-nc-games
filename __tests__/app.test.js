@@ -416,4 +416,27 @@ describe("API Testing", () => {
       });
     });
   });
+  describe("/api/users", () => {
+    describe("GET reqeusts", () => {
+      test("GET /api/users should respond with a status code of 200", () => {
+        return request(app).get("/api/users").expect(200);
+      });
+      test("GET /api/users should return an array of user objects", () => {
+        return request(app)
+          .get("/api/users")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.users.length).not.toBe(0);
+            expect(typeof res.body.users).toBe("object");
+            res.body.users.forEach((obj) => {
+              expect(obj).toMatchObject({
+                username: expect.any(String),
+                name: expect.any(String),
+                avatar_url: expect.any(String),
+              });
+            });
+          });
+      });
+    });
+  });
 });
