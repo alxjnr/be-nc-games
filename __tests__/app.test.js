@@ -147,5 +147,72 @@ describe("API Testing", () => {
           });
       });
     });
+    describe("POST requests", () => {
+      test("Should return a status code of 201", () => {
+        const requestToSend = {
+          username: "mallionaire",
+          body: "demonstration comment",
+        };
+        return request(app)
+          .post("/api/reviews/5/comments")
+          .send(requestToSend)
+          .expect(201);
+      });
+      test("Should return the created post", () => {
+        const requestToSend = {
+          username: "mallionaire",
+          body: "demonstration comment",
+        };
+        return request(app)
+          .post("/api/reviews/5/comments")
+          .send(requestToSend)
+          .expect(201)
+          .then((res) => {
+            expect(res.body.review[0]).toMatchObject({
+              author: "mallionaire",
+              body: "demonstration comment",
+              comment_id: expect.any(Number),
+              created_at: expect.any(String),
+              review_id: 5,
+              votes: expect.any(Number),
+            });
+          });
+      });
+      test("Should return a 404 if the review_id is not found", () => {
+        const requestToSend = {
+          username: "mallionaire",
+          body: "demonstration comment",
+        };
+        return request(app)
+          .post("/api/reviews/999/comments")
+          .send(requestToSend)
+          .expect(404)
+          .then((res) => {
+            expect(res.text).toBe("ID not found");
+          });
+      });
+      test("Should return a 400 if the request is not formatted correctly", () => {
+        const requestToSend = {
+          test: "name",
+        };
+        return request(app)
+          .post("/api/reviews/5/comments")
+          .send(requestToSend)
+          .expect(400)
+          .then((res) => {
+            expect(res.text).toBe("Invalid type for request");
+          });
+      });
+      test("Should return a 400 if the request contains no body", () => {
+        const requestToSend = {};
+        return request(app)
+          .post("/api/reviews/5/comments")
+          .send(requestToSend)
+          .expect(400)
+          .then((res) => {
+            expect(res.text).toBe("Invalid type for request");
+          });
+      });
+    });
   });
 });

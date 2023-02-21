@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const format = require("pg-format");
 
 exports.fetchReviewById = (review_id) => {
   return db
@@ -26,4 +27,16 @@ exports.fetchReviews = () => {
     .then((res) => {
       return res.rows;
     });
+};
+
+exports.insertReviewComment = (username, body, review_id) => {
+  const arr = [[body, 0, username, review_id, new Date()]];
+  const insertObj = format(
+    `INSERT INTO comments (body, votes, author, review_id, created_at) VALUES %L RETURNING *;`,
+    arr
+  );
+
+  return db.query(insertObj).then((res) => {
+    return res.rows;
+  });
 };
