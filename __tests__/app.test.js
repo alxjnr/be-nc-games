@@ -107,6 +107,14 @@ describe("API Testing", () => {
       test("Should return a 404 if category specified does not exist", () => {
         return request(app).get("/api/reviews?category=test").expect(404);
       });
+      test("Should return an empty array if the category exists but no reviews are found", () => {
+        return request(app)
+          .get("/api/reviews?category=childrens_games")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.reviews).toEqual([]);
+          });
+      });
       test("Should return an array sorted by specified column (owner)", () => {
         return request(app)
           .get("/api/reviews?sort_by=owner")
@@ -150,14 +158,14 @@ describe("API Testing", () => {
             });
           });
       });
-      test("Should return a 400 if query values are of an invalid type", () => {
+      test("Should return a 400 if query values are of an invalid type (order)", () => {
         return request(app)
           .get("/api/reviews?category=social_deduction&sort_by=votes&order=ooo")
           .expect(400);
       });
-      test("Should return a 400 if query keys are of an invalid type", () => {
+      test("Should return a 400 if query keys are of an invalid type (sort_by)", () => {
         return request(app)
-          .get("/api/reviews?category=social_deduction&sort_by=votes&order=ooo")
+          .get("/api/reviews?category=social_deduction&sort_by=test&order=desc")
           .expect(400);
       });
       test("GET /api/reviews/:review_id should return a status code of 200", () => {
