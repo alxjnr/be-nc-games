@@ -1,9 +1,29 @@
 const db = require("../db/connection");
 const format = require("pg-format");
 
+// exports.fetchReviewById = (review_id) => {
+//   return db
+//     .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
+//     .then((res) => {
+//       if (!res.rows.length) {
+//         return Promise.reject({
+//           status: 404,
+//           msg: `No review found for review_id ${review_id}`,
+//         });
+//       }
+//       return res.rows;
+//     });
+// };
+
 exports.fetchReviewById = (review_id) => {
   return db
-    .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
+    .query(
+      `SELECT reviews.*, COUNT(comments.review_id) AS comment_count FROM reviews 
+      LEFT JOIN comments 
+      ON reviews.review_id = comments.review_id WHERE reviews.review_id = $1
+      GROUP BY reviews.review_id;`,
+      [review_id]
+    )
     .then((res) => {
       if (!res.rows.length) {
         return Promise.reject({
