@@ -1,17 +1,61 @@
-# Northcoders House of Games API
+# NC House of Games API
 
-## Connecting the databases
+API (hosted by Render) [here](https://nc-games-hsvp.onrender.com/api)
 
-To connect to the database locally, please add the following files and their contents to the directory:
+## Introduction:
 
-.env.development
+NC House of Games API is a ***RESTful API*** for reviews, comments and board games. The API is free and does not require authentication. 
 
-- PGDATABASE=nc_games
+## Local database setup instructions:
 
-.env.test
+### Cloning the repository:
 
-- PGDATABASE=nc_games_test
 
-## Background
+To clone the API/repository, click `<> code` at the top of the repository page and copy the https link provided.
 
-We will be building an API for the purpose of accessing application data programmatically. The intention here is to mimic the building of a real world backend service (such as reddit) which should provide this information to the front end architecture.
+`git clone <https-link-here>` in the terminal will download the required files into a new directory with the repository name.
+
+
+### Installing dependencies:
+
+
+`npm install` will download the required dependencies.
+
+*NOTE*:
+
+`v19.3.0` and above of `node.js` is required.
+`v14.5` and above of `postgres` is required.
+
+
+### Setting up local connections: 
+
+
+You will want to setup the connections to the databse locally. To do this, please add the following files and their contents to the directory:
+
+`.env.development`
+`.env.test`
+
+inside `env.development`, add `PGDATABASE=nc_games`
+inside `env.test`, add `PGDATABASE=nc_games_test`
+
+
+### Setting up the databases:
+
+
+`npm run setup-dbs` will create the databases required (using PostgreSQL)
+
+
+### Seeding the databases:
+
+
+`npm run seed` will then seed the local databases
+
+
+### Running tests:
+
+
+`npm test` will run the tests included in the repository using Jest
+ 
+
+
+
