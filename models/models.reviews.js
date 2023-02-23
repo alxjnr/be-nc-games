@@ -20,61 +20,69 @@ exports.fetchReviews = (
   sort_by = "created_at",
   order = "DESC"
 ) => {
-  const values = [];
-  const reviewColumns = [
-    "title",
-    "designer",
-    "owner",
-    "review_img_url",
-    "review_body",
-    "category",
-    "created_at",
-    "votes",
-  ];
-
-  const categoryList = [
-    "",
-    "euro game",
-    "social deduction",
-    "dexterity",
-    "childrens games",
-  ];
-
-  let orderUpper = order.toUpperCase();
-  let sortLower = sort_by.toLowerCase();
-  let categoryLower = category.replace(/_/g, " ").toLowerCase();
-  if (orderUpper != "ASC" && orderUpper != "DESC") {
-    orderUpper = "FALSE_ORDER_TYPE";
-  }
-
-  if (!reviewColumns.includes(sortLower)) {
-    sortLower = "INVALID_COLUMN_NAME";
-  }
-
-  if (!categoryList.includes(categoryLower)) {
-    return Promise.reject({
-      status: 404,
-      msg: `No category found`,
+  const reviewColumnQuery = db
+    .query(`SELECT * FROM reviews WHERE false;`)
+    .then((columns) => {
+      return columns;
     });
-  }
 
-  let queryStr = `SELECT reviews.*, COUNT(comments.review_id) AS comment_count FROM reviews
-  LEFT JOIN comments
-  ON reviews.review_id = comments.review_id `;
+  const categoryListQuery = db
+    .query(`SELECT slug FROM categories;`)
+    .then((slugs) => {
+      return slugs;
+    });
 
-  if (categoryLower.length) {
-    if (categoryLower === "childrens games") {
-      categoryLower = `children''s games`;
+  return Promise.all([reviewColumnQuery, categoryListQuery]).then((values) => {
+    const params = [];
+    const categoryListUnformatted = [""];
+    const reviewColumns = [];
+
+    values[1].rows.forEach((obj) => {
+      categoryListUnformatted.push(obj.slug);
+    });
+    values[0].fields.forEach((field) => {
+      reviewColumns.push(field.name);
+    });
+    const categoryList = categoryListUnformatted.map((element) => {
+      return element.replace(/'/g, "");
+    });
+
+    let orderUpper = order.toUpperCase();
+    let sortLower = sort_by.toLowerCase();
+    let categoryLower = category.replace(/_/g, " ").toLowerCase();
+    if (orderUpper != "ASC" && orderUpper != "DESC") {
+      orderUpper = "FALSE_ORDER_TYPE";
     }
-    queryStr += `WHERE category LIKE $1`;
-    values.push(categoryLower);
-  }
 
-  queryStr += ` GROUP BY reviews.review_id
-  ORDER BY reviews.${sortLower} ${orderUpper};`;
+    if (!reviewColumns.includes(sortLower)) {
+      sortLower = "INVALID_COLUMN_NAME";
+    }
 
-  return db.query(queryStr, values).then((res) => {
-    return res.rows;
+    if (!categoryList.includes(categoryLower)) {
+      return Promise.reject({
+        status: 404,
+        msg: `No category found`,
+      });
+    }
+
+    let queryStr = `SELECT reviews.*, COUNT(comments.review_id) AS comment_count FROM reviews
+    LEFT JOIN comments
+    ON reviews.review_id = comments.review_id `;
+
+    if (categoryLower.length) {
+      if (categoryLower === "childrens games") {
+        categoryLower = `children''s games`;
+      }
+      queryStr += `WHERE category LIKE $1`;
+      params.push(categoryLower);
+    }
+
+    queryStr += ` GROUP BY reviews.review_id
+    ORDER BY reviews.${sortLower} ${orderUpper};`;
+
+    return db.query(queryStr, params).then((res) => {
+      return res.rows;
+    });
   });
 };
 
