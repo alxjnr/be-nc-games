@@ -146,6 +146,22 @@ describe("API Testing", () => {
             expect(res.text).toBe("No review found for review_id 999");
           });
       });
+      test("GET /api/reviews/:review_id should return a review object containing a comment_count property", () => {
+        return request(app)
+          .get("/api/reviews/2")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.review[0]).toHaveProperty("comment_count", "3");
+          });
+      });
+      test("GET /api/reviews/:review_id should return a review object containing a comment_count property, even if the comment count is 0", () => {
+        return request(app)
+          .get("/api/reviews/5")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.review[0]).toHaveProperty("comment_count", "0");
+          });
+      });
       test("GET /api/reviews/2/comments should return a status code of 200", () => {
         return request(app).get("/api/reviews/2/comments").expect(200);
       });
