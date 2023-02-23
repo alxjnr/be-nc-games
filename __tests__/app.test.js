@@ -538,4 +538,22 @@ describe("API Testing", () => {
       });
     });
   });
+  describe("GET /api", () => {
+    test("Should return a status code of 200", () => {
+      return request(app).get("/api").expect(200);
+    });
+    test("Should return a JSON file containing information on the api endpoints", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then((res) => {
+          console.log(res.body);
+          expect(res.body).toMatchObject({
+            "GET /api": expect.any(Object),
+            "GET /api/categories": expect.any(Object),
+            "GET /api/reviews": expect.any(Object),
+          });
+        });
+    });
+  });
 });

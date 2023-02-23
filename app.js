@@ -9,6 +9,7 @@ const {
   patchReviewById,
 } = require("./controllers/controllers.reviews");
 const { getUsers } = require("./controllers/controllers.users");
+const { getApiEndpoints } = require("./controllers/controllers.api");
 
 app.use(express.json());
 
@@ -25,6 +26,8 @@ app.get("/api/reviews/:review_id/comments", getCommentsByReviewId);
 app.get("/api/users", getUsers);
 
 app.patch("/api/reviews/:review_id", patchReviewById);
+
+app.get("/api", getApiEndpoints);
 
 app.use((err, req, res, next) => {
   if (
