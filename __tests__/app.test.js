@@ -84,7 +84,90 @@ describe("API Testing", () => {
             });
           });
       });
-
+      test("Should return reviews by selected category (social deduction) if specfied", () => {
+        return request(app)
+          .get("/api/reviews?category=social_deduction")
+          .expect(200)
+          .then((res) => {
+            res.body.reviews.forEach((obj) => {
+              expect(obj).toHaveProperty("category", "social deduction");
+            });
+          });
+      });
+      test("Should return reviews by selected category (dexterity) if specfied", () => {
+        return request(app)
+          .get("/api/reviews?category=dexterity")
+          .expect(200)
+          .then((res) => {
+            res.body.reviews.forEach((obj) => {
+              expect(obj).toHaveProperty("category", "dexterity");
+            });
+          });
+      });
+      test("Should return a 404 if category specified does not exist", () => {
+        return request(app).get("/api/reviews?category=test").expect(404);
+      });
+      test("Should return an empty array if the category exists but no reviews are found", () => {
+        return request(app)
+          .get("/api/reviews?category=childrens_games")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.reviews).toEqual([]);
+          });
+      });
+      test("Should return an array sorted by specified column (owner)", () => {
+        return request(app)
+          .get("/api/reviews?sort_by=owner")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.reviews).toBeSortedBy("owner", {
+              descending: true,
+            });
+          });
+      });
+      test("Should return an array sorted by specified column (votes)", () => {
+        return request(app)
+          .get("/api/reviews?sort_by=votes")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.reviews).toBeSortedBy("votes", {
+              descending: true,
+            });
+          });
+      });
+      test("Should return an array ordered by ascending (created_at)", () => {
+        return request(app)
+          .get("/api/reviews?order=asc")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.reviews).toBeSortedBy("created_at", {
+              descending: false,
+            });
+          });
+      });
+      test("Should return an array with multiple queries", () => {
+        return request(app)
+          .get("/api/reviews?category=social_deduction&sort_by=votes&order=asc")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.reviews).toBeSortedBy("votes", {
+              descending: false,
+            });
+            res.body.reviews.forEach((obj) => {
+              expect(obj).toHaveProperty("category", "social deduction");
+            });
+          });
+      });
+      test("Should return a 400 if query values are of an invalid type (order)", () => {
+        return request(app)
+          .get("/api/reviews?category=social_deduction&sort_by=votes&order=ooo")
+          .expect(400);
+      });
+      test("Should return a 400 if query keys are of an invalid type (sort_by)", () => {
+        return request(app)
+          .get("/api/reviews?category=social_deduction&sort_by=test&order=desc")
+          .expect(400);
+      });
       test("GET /api/reviews/:review_id should return a status code of 200", () => {
         return request(app).get("/api/reviews/1").expect(200);
       });

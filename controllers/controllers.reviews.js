@@ -18,11 +18,14 @@ exports.getReviewById = (req, res, next) => {
 };
 
 exports.getReviews = (req, res, next) => {
-  fetchReviews()
+  const { category, sort_by, order } = req.query;
+  fetchReviews(category, sort_by, order)
     .then((reviews) => {
       res.status(200).send({ reviews });
     })
-    .catch(next);
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.postReviewComment = (req, res, next) => {
