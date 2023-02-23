@@ -23,7 +23,7 @@ To clone the API/repository, click `<> code` at the top of the repository page a
 
 *NOTE*:
 
-`v19.3.0` and above of `node.js` is required.
+`v19.3.0` and above of `node.js` is required.\
 `v14.5` and above of `postgres` is required.
 
 
@@ -35,7 +35,7 @@ You will want to setup the connections to the databse locally. To do this, pleas
 `.env.development`
 `.env.test`
 
-inside `env.development`, add `PGDATABASE=nc_games`
+inside `env.development`, add `PGDATABASE=nc_games`\
 inside `env.test`, add `PGDATABASE=nc_games_test`
 
 
