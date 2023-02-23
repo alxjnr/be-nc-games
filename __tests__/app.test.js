@@ -538,6 +538,29 @@ describe("API Testing", () => {
       });
     });
   });
+  describe("GET /api", () => {
+    test("Should return a status code of 200", () => {
+      return request(app).get("/api").expect(200);
+    });
+    test("Should return a JSON file containing information on the api endpoints", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then((res) => {
+          expect(res.body).toMatchObject({
+            "GET /api": expect.any(Object),
+            "GET /api/categories": expect.any(Object),
+            "GET /api/reviews": expect.any(Object),
+            "GET /api/reviews/:review_id": expect.any(Object),
+            "GET /api/reviews/:review_id/comments": expect.any(Object),
+            "GET /api/users": expect.any(Object),
+            "POST /api/reviews/:review_id/comments": expect.any(Object),
+            "PATCH /api/reviews/:review_id": expect.any(Object),
+            "DELETE /api/comments/:comment_id": expect.any(Object),
+          });
+        });
+    });
+  });
   describe("/api/comments", () => {
     describe("DELETE requests", () => {
       test("DELETE /api/comments/:comment_id should return a status code of 204", () => {

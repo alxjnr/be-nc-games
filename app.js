@@ -9,6 +9,7 @@ const {
   patchReviewById,
 } = require("./controllers/controllers.reviews");
 const { getUsers } = require("./controllers/controllers.users");
+const { getApiEndpoints } = require("./controllers/controllers.api");
 const { deleteCommentById } = require("./controllers/controllers.comments");
 
 app.use(express.json());
@@ -27,6 +28,7 @@ app.get("/api/users", getUsers);
 
 app.patch("/api/reviews/:review_id", patchReviewById);
 
+app.get("/api", getApiEndpoints);
 app.delete("/api/comments/:comment_id", deleteCommentById);
 
 app.use((err, req, res, next) => {
