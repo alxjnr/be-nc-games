@@ -547,11 +547,16 @@ describe("API Testing", () => {
         .get("/api")
         .expect(200)
         .then((res) => {
-          console.log(res.body);
           expect(res.body).toMatchObject({
             "GET /api": expect.any(Object),
             "GET /api/categories": expect.any(Object),
             "GET /api/reviews": expect.any(Object),
+            "GET /api/reviews/:review_id": expect.any(Object),
+            "GET /api/reviews/:review_id/comments": expect.any(Object),
+            "GET /api/users": expect.any(Object),
+            "POST /api/reviews/:review_id/comments": expect.any(Object),
+            "PATCH /api/reviews/:review_id": expect.any(Object),
+            "DELETE /api/comments/:comment_id": expect.any(Object),
           });
         });
     });

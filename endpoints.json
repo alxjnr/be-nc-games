@@ -103,5 +103,9 @@
         }
       ]
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "removes the comment specified by comment_id, provides no response to the client",
+    "queries": []
   }
 }
