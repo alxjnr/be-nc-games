@@ -4,7 +4,7 @@ API (hosted by Render) [here](https://nc-games-hsvp.onrender.com/api)
 
 ## Introduction:
 
-NC House of Games API is a ***RESTful API*** for reviews, comments and board games. The API is free and does not require authentication. 
+NC House of Games API is a ***RESTful API***. The API can be used to retrieve information about specific games, read reviews and comments. It is designed to be easy to use and does not require any authentication, so anyone can access the API's data. 
 
 ## Local database setup instructions:
 
