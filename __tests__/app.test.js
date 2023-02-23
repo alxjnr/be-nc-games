@@ -455,4 +455,47 @@ describe("API Testing", () => {
       });
     });
   });
+  describe("/api/comments", () => {
+    describe("DELETE requests", () => {
+      test("DELETE /api/comments/:comment_id should return a status code of 204", () => {
+        return request(app).delete("/api/comments/5").expect(204);
+      });
+      test("DELETE /api/comments/:comment_id should remove comment", () => {
+        return request(app)
+          .get("/api/reviews/2/comments")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.comments[0]).toEqual({
+              author: "mallionaire",
+              body: "Now this is a story all about how, board games turned my life upside down",
+              comment_id: 5,
+              created_at: "2021-01-18T10:24:05.410Z",
+              review_id: 2,
+              votes: 13,
+            });
+          })
+          .then(() => {
+            return request(app).delete("/api/comments/5").expect(204);
+          })
+          .then(() => {
+            return request(app)
+              .get("/api/reviews/2/comments")
+              .expect(200)
+              .then((res) => {
+                expect(
+                  res.body.comments.filter((obj) => {
+                    return obj.comment_id === 5;
+                  }).length
+                ).toBe(0);
+              });
+          });
+      });
+      test("DELETE /api/comments/:comment_id should return a 404 if the comment id is not found", () => {
+        return request(app).delete("/api/comments/20").expect(404);
+      });
+      test("DELETE /api/comments/:comment_id should return a 400 if the request includes an invalid type", () => {
+        return request(app).delete("/api/comments/test").expect(400);
+      });
+    });
+  });
 });
