@@ -13,6 +13,8 @@ const { getUsers } = require("./controllers/controllers.users");
 const { getApiEndpoints } = require("./controllers/controllers.api");
 const { deleteCommentById } = require("./controllers/controllers.comments");
 
+// cors
+
 app.use(cors());
 
 app.use(express.json());
