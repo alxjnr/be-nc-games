@@ -57,6 +57,8 @@ exports.fetchReviews = (
     const categoryListUnformatted = [""];
     const reviewColumns = [];
 
+    let isCommentCount = false;
+
     values[1].rows.forEach((obj) => {
       categoryListUnformatted.push(obj.slug);
     });
@@ -75,7 +77,12 @@ exports.fetchReviews = (
     }
 
     if (!reviewColumns.includes(sortLower)) {
-      sortLower = "INVALID_COLUMN_NAME";
+      if (sortLower === "comment_count") {
+        sortLower = "comment_count";
+        isCommentCount = true;
+      } else {
+        sortLower = "INVALID_COLUMN_NAME";
+      }
     }
 
     if (!categoryList.includes(categoryLower)) {
@@ -97,8 +104,13 @@ exports.fetchReviews = (
       params.push(categoryLower);
     }
 
-    queryStr += ` GROUP BY reviews.review_id
-    ORDER BY reviews.${sortLower} ${orderUpper};`;
+    if (isCommentCount) {
+      queryStr += ` GROUP BY reviews.review_id
+      ORDER BY ${sortLower} ${orderUpper};`;
+    } else {
+      queryStr += ` GROUP BY reviews.review_id
+      ORDER BY reviews.${sortLower} ${orderUpper};`;
+    }
 
     return db.query(queryStr, params).then((res) => {
       return res.rows;

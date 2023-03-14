@@ -135,6 +135,16 @@ describe("API Testing", () => {
             });
           });
       });
+      test("Should return an array sorted by specified column (comment_count)", () => {
+        return request(app)
+          .get("/api/reviews?sort_by=comment_count")
+          .expect(200)
+          .then((res) => {
+            expect(res.body.reviews).toBeSortedBy("comment_count", {
+              descending: true,
+            });
+          });
+      });
       test("Should return an array ordered by ascending (created_at)", () => {
         return request(app)
           .get("/api/reviews?order=asc")
